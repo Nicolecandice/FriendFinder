@@ -24,17 +24,45 @@ app.post("/api/friends", function (req, res) {
     // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body-parser middleware
-    if (friends.length <= 5) {
-        friends.push(req.body);
-        res.json();
+   var bestMatch= {
+       name: "",
+       photo: "",
+       totallDiffer: Infinity// Total least difference
+   };
+
+   var uData = req.body;
+   var uScore = uData.uScore
+
+   var totallDiffer;
+
+   //Loop through all possible matches
+    for (var i=0; i<friends.length; i++) {
+        var myFriend =friends[i];
+        totallDiffer = 0;
+
+        console.log(myFriend.name);
+
+        // loop through all scores
+       for (var k =0; k < myfriends.scores.length; k++) {
+            var myFriendScore =myFriend.scores[k];
+            var userScore = userScores[k];
+
+
+         totallDiffer += Math.abs(parseInt(myFriendScore)-parseInt(userScore));
 
     }
-});
+    if(totallDiffer <= bestMatch.friendDifference){
+
+    // if match found , match friend to user.
+    bestMatch.name = myFriend.name;
+    bestMatch.photo = myFriend.photo;
+    bestMatch.friendDifference =  totallDiffer;
+}
+}
 //=======================================================================================================
-app.post("/api/clear", function () {
-    // Emppty out the arrays of data
-    friends = [];
+    friends.push(uData);
 
-    console.log(friends);
+    res.json(bestMatch); 
+}); 
 
-});
+
